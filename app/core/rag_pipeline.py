@@ -1,4 +1,4 @@
-from app.core.config import USE_OPENAI, OPENAI_API_KEY, HUGGINGFACE_MODEL_NAME, HUGGINGFACEHUB_API_TOKEN
+from core.config import USE_OPENAI, OPENAI_API_KEY, HUGGINGFACE_MODEL_NAME, HUGGINGFACEHUB_API_TOKEN
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
@@ -25,13 +25,38 @@ class DocumentQA:
 
     def _load_llm(self):
         if USE_OPENAI:
+            if not OPENAI_API_KEY:
+                raise ValueError("USE_OPENAI is true but OPENAI_API_KEY is not set. Please set OPENAI_API_KEY in environment variables or .env file.")
             return ChatOpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
         else:
-            return HuggingFaceEndpoint(
-                repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1",
-                huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
-                temperature=0.1
-            )
+            # 使用 HuggingFace 本地模型或 API
+            try:
+                if HUGGINGFACEHUB_API_TOKEN:
+                    return HuggingFaceEndpoint(
+                        repo_id="mistralai/Mixtral-8x7B-Instruct-v0.1",
+                        huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN,
+                        temperature=0.1
+                    )
+                else:
+                    # 如果没有 API token，使用本地模型
+                    from langchain_community.llms import HuggingFacePipeline
+                    from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+                    import torch
+                    
+                    model_id = "gpt2"  # 使用较小的模型用于演示
+                    tokenizer = AutoTokenizer.from_pretrained(model_id)
+                    model = AutoModelForCausalLM.from_pretrained(model_id)
+                    pipe = pipeline(
+                        "text-generation",
+                        model=model,
+                        tokenizer=tokenizer,
+                        max_new_tokens=100,
+                        temperature=0.1
+                    )
+                    return HuggingFacePipeline(pipeline=pipe)
+            except Exception as e:
+                # 如果加载 HuggingFace 模型失败，抛出错误
+                raise ValueError(f"Failed to load HuggingFace model: {str(e)}. Please either set OPENAI_API_KEY or HUGGINGFACEHUB_API_TOKEN.")
 
     def load_and_index_pdf(self, file_path):
         loader = PyPDFLoader(file_path)
