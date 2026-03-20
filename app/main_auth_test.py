@@ -1,30 +1,16 @@
-
-from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from core.auth import (
-    UserRegister, UserLogin, TokenResponse, get_current_user, get_optional_user,
+    UserRegister, UserLogin, get_current_user,
     create_access_token, verify_password_strength, validate_email, ACCESS_TOKEN_EXPIRE_MINUTES
 )
 from core.database import create_user, verify_user, get_user_by_id
 from datetime import timedelta
 import os
-import shutil
 
 app = FastAPI()
-qa_system = None
 
-def get_qa_system():
-    global qa_system
-    if qa_system is None:
-        try:
-            from core.rag_pipeline import DocumentQA
-            qa_system = DocumentQA()
-        except ImportError as e:
-            raise HTTPException(status_code=503, detail=f"RAG system not available: {str(e)}")
-    return qa_system
-
-# Permitir acceso desde frontend (Streamlit, etc.)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,30 +19,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-UPLOAD_DIR = "data/uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to RAG Chatbot Documents API",
+        "message": "JWT Auth API Test",
         "endpoints": {
-            "upload": "/upload/ - Upload a PDF document",
-            "ask": "/ask/ - Ask a question about uploaded documents",
-            "docs": "/docs - Interactive API documentation",
-            "auth": {
-                "register": "POST /auth/register - Register new user",
-                "login": "POST /auth/login - User login",
-                "me": "GET /auth/me - Get current user info",
-                "test_page": "/auth/test - Test authentication page"
-            }
+            "register": "POST /auth/register - Register new user",
+            "login": "POST /auth/login - User login",
+            "me": "GET /auth/me - Get current user info (requires JWT)",
+            "test_page": "/auth/test - Interactive test page",
+            "docs": "/docs - API documentation"
         }
     }
 
 
-# ========== Authentication Endpoints ==========
-
-@app.post("/auth/register", response_model=dict)
+@app.post("/auth/register")
 async def register(user_data: UserRegister):
     if len(user_data.username) < 3:
         raise HTTPException(status_code=400, detail="Username must be at least 3 characters long")
@@ -84,7 +61,7 @@ async def register(user_data: UserRegister):
     }
 
 
-@app.post("/auth/login", response_model=dict)
+@app.post("/auth/login")
 async def login(user_data: UserLogin):
     result = verify_user(user_data.username_or_email, user_data.password)
     
@@ -111,7 +88,7 @@ async def login(user_data: UserLogin):
     }
 
 
-@app.get("/auth/me", response_model=dict)
+@app.get("/auth/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
     user = get_user_by_id(current_user["user_id"])
     if not user:
@@ -480,33 +457,7 @@ async def auth_test_page():
     """
     return html_content
 
-@app.post("/upload/")
-async def upload_file(file: UploadFile = File(...)):
-    try:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
 
-        qa = get_qa_system()
-        qa.load_and_index_pdf(file_path)
-        return {"message": "Document loaded and processed", "file": file.filename}
-    except HTTPException as e:
-        return {"error": e.detail}
-    except Exception as e:
-        return {"error": f"Upload failed: {str(e)}"}
-
-@app.post("/ask/")
-async def ask_question(question: str = Form(...)):
-    try:
-        qa = get_qa_system()
-        if not qa.qa_chain:
-            index_loaded = qa.load_existing_index()
-            if not index_loaded:
-                return {"error": "No index loaded. Please upload a document first."}
-
-        answer = qa.ask(question)
-        return {"question": question, "answer": answer}
-    except HTTPException as e:
-        return {"error": e.detail}
-    except Exception as e:
-        return {"error": f"Question failed: {str(e)}"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
